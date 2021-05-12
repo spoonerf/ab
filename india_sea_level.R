@@ -75,27 +75,21 @@ ggplot(dp, aes(x = sea_level_rise, y = displaced_population/1000000))+
   theme_bw()
 
 land_6m[land_6m < 1] <- NA
+pop_6m[pop_6m == 0] <- NA
 
-writeRaster(land_6m, "sea_level_rise/india_six_metres_1km.tif", overwrite = TRUE)
-
-#test <- crop(land_6m, extent(c(87, 88, 21,23)))
-#writeRaster(test, "sea_level_rise/india_six_metres.tif", overwrite = TRUE)
-
-
-## Try and make leaflet map - having some issues with the NAs not showing as NAs
-tst <- read_stars("sea_level_rise/india_six_metres_1km.tif", proxy = TRUE)
+#writeRaster(land_6m, "sea_level_rise/india_six_metres_1km.tif", overwrite = TRUE)
 
 
 leaflet() %>%
   setView(lng = 88.5, lat = 22, zoom = 08) %>%
   #addTiles() %>% 
-   addProviderTiles("CartoDB.DarkMatter") %>%
+  addProviderTiles("CartoDB.DarkMatter") %>%
   addGeoRaster(
-    x = tst,
+    x = pop_6m,
     autozoom = FALSE,
     resolution = 100,
     opacity = 1, colorOptions = colorOptions(
-      palette = grey.colors(256), na.color = "transparent" 
+      palette = hcl.colors(256, "viridis"), na.color = "transparent" 
     ))
 
 
